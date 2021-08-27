@@ -39,13 +39,14 @@ function mainMenu(person, people){
 
   switch(displayOption){
     case "info":
-    // TODO: get person's info
+    displayPerson(person)
+    mainMenu(person, people)
     break;
     case "family":
-    // TODO: get person's family
+    listFamily()
     break;
     case "descendants":
-    // TODO: get person's descendants
+    listDecendants()
     break;
     case "restart":
     app(people); // restart
@@ -83,9 +84,13 @@ function displayPeople(people){
 function displayPerson(person){
   // print all of the information about a person:
   // height, weight, age, name, occupation, eye color.
-  let personInfo = "First Name: " + person.firstName + "\n";
-  personInfo += "Last Name: " + person.lastName + "\n";
-  // TODO: finish getting the rest of the information to display
+  let personInfo = "First Name: " + person.firstName; 
+  personInfo += "Last Name: " + person.lastName; 
+  personInfo += "eye color: " + person.eyeColor;
+  personInfo += "gender: " + person.gender;
+  personInfo +="height: " + person.height;
+personInfo += "weight: " + person.weight; 
+personInfo += "occupation" + person.occupation 
   alert(personInfo);
 }
 
@@ -205,4 +210,53 @@ function searchByWeight(people){
   })
   
   return foundPerson;
+}
+
+
+function displayFamily(person){
+  let spouse = findSpouse(person)
+  let parents = findParents(person)
+  let children = findChildren(person)
+
+  //combine those three arrays into one single array
+  //pass that array into displayPeople
+
+
+
+}
+
+function findSpouse(person) {
+  let spou = people.filter(function(item){
+    if(person.currentSpouse === item.id){
+      return true;
+    }
+    else{
+      return false;
+    }
+  })
+  return spou
+}
+
+function findParents(person){
+  let par = people.filter(function(item){ 
+    if(person.parent[0] === item.id || item.spouse){
+    return true; 
+  }
+  else{
+  return false;
+  }
+  })
+  return par; 
+  }
+
+function findChildren(person){
+let child = people.filter(function(item){
+  if(person.parent === item.id) {
+  return true; 
+}
+else{
+  return false;
+}
+})
+return child;
 }
