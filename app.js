@@ -206,7 +206,7 @@ function searchByWeight(people){
     }
     else{
       return false;
-    }
+    } 
   })
   
   return foundPerson;
@@ -255,8 +255,12 @@ let child = people.filter(function(item){
   return true; 
 }
 else{
-  return false;
+  return false; 
 }
 })
 return child;
+};
+{
+ familyMerge = child.concat(par)(spou); 
+console.log(familyMerge) 
 }
