@@ -13,16 +13,16 @@ function app(people){
       searchResults = searchByName(people);
       break;
     case 'no':
-     selectSearch()
-      
+      searchResults = selectSearch(people)
       break;
-      default:
+      default: 
     app(people); // restart app
       break;
   }
+  const foundPerson = searchResults[0]
   
   // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
-  mainMenu(searchResults, people);
+  mainMenu(foundPerson, people); 
 }
 
 // Menu function to call once you find who you are looking for
@@ -43,10 +43,10 @@ function mainMenu(person, people){
     mainMenu(person, people)
     break;
     case "family":
-    listFamily()
+    displayFamily(person, people)
     break;
     case "descendants":
-    listDecendants()
+    listDecendants(person, people)
     break;
     case "restart":
     app(people); // restart
@@ -70,8 +70,9 @@ function searchByName(people){
       return false;
     }
   })
-  // TODO: find the person using the name they entered
-  return foundPerson;
+  
+  return foundPerson; 
+  
 }
 
 // alerts a list of people
@@ -96,9 +97,8 @@ personInfo += "occupation" + person.occupation
 
 // function that prompts and validates user input
 function promptFor(question, valid){
-  do{
     var response = prompt(question).trim();
-  } while(!response || !valid(response));
+   while(!response || !valid(response));
   return response;
 }
 
@@ -108,53 +108,49 @@ function yesNo(input){
 }
 
 // helper function to pass in as default promptFor validation
-function chars(input){
-  return true; // default validation only
+function chars(input){  
+  return true; 
 }
+
 
 
 
 function selectSearch(people) {
 let searchResults = people
 
-while(searchResults.length >1){
-  let searchChoice = promptFor('Which trait would you like to search for?\n1. gender\n2. dob\n3. eye color\n4. height\n5. weight') 
-  switch(searchoice){ 
-  case '1':
-    serachResults = searchByGender(people) 
-    break; 
-    case '2': 
-    searchResults = searchByDob(people) 
-    break; 
-    case '3': 
-    searchResults = searchByEyeColor(people) 
-    break; 
-    case '4': 
-    searchResults = searchByHeight(people)
-    break; 
-    case '5':
-    searchResults = searchByWeight(people) 
-    break;
+  while(true){
+    let searchChoice = promptFor('Which trait would you like to search for?\n1. gender\n2. dob\n3. eye color\n4. height\n5. weight', chars) 
+    switch(searchChoice){ 
+    case '1':
+      searchResults = searchByGender(people) 
+      break; 
+      case '2': 
+      searchResults = searchByDob(people) 
+      break; 
+      case '3': 
+      searchResults = searchByEyeColor(people) 
+      break; 
+      case '4': 
+      searchResults = searchByHeight(people)
+      break; 
+      case '5':
+      searchResults = searchByWeight(people) 
+      break;
+    }
+  displayPeople(searchResults) 
+  return searchResults
+  }  
 }
-
-}
-return searchResults
-}  
 
 function searchByGender(people){
   let gender = promptFor("What is the person's gender", chars);
 
   let foundPerson = people.filter(function(person){
-    if(person.gender === gender) {
-      return true;
-    }
-    else{
-      return false;
-    }
+    
+      return person.gender === gender  
   })
-  
-  return foundPerson;
-}
+  return foundPerson; 
+}  
 
 function searchByDob(people){
   let dob = promptFor("What is the person's dob", chars);
@@ -213,19 +209,17 @@ function searchByWeight(people){
 }
 
 
-function displayFamily(person){
-  let spouse = findSpouse(person)
-  let parents = findParents(person)
-  let children = findChildren(person)
+function displayFamily(person, people){
+  let parents = findParents(person, people)
+  let children = findChildren(person, people)
+  let spouse = findSpouse(person, people)
 
-  //combine those three arrays into one single array
-  //pass that array into displayPeople
-
-
-
+    let combine = spouse.concat(children).concat(parents)
+    console.log(displayPeople(combine)) 
 }
+  
 
-function findSpouse(person) {
+function findSpouse(person, people) {
   let spou = people.filter(function(item){
     if(person.currentSpouse === item.id){
       return true;
@@ -237,9 +231,9 @@ function findSpouse(person) {
   return spou
 }
 
-function findParents(person){
+function findParents(person, people){
   let par = people.filter(function(item){ 
-    if(person.parent[0] === item.id || item.spouse){
+    if(person.parents[0] === item.id || item.spouse){
     return true; 
   }
   else{
@@ -249,9 +243,9 @@ function findParents(person){
   return par; 
   }
 
-function findChildren(person){
+function findChildren(person, people){
 let child = people.filter(function(item){
-  if(person.parent === item.id) {
+  if(person.parents === item.id) {
   return true; 
 }
 else{
@@ -259,8 +253,25 @@ else{
 }
 })
 return child;
-};
-{
- familyMerge = child.concat(par)(spou); 
-console.log(familyMerge) 
 }
+function listDecendants(person, people){
+  if(!person)
+  return null; 
+  console.log(person)
+  
+  let descendants = people.filter(function(item) {
+if(item.parents[0] === person.id || item.parents[1] === person.id)
+return true; 
+else{
+  return false;  
+  
+}
+  })
+  for(let i = 0; i < descendants.length; i++){
+  listDecendants(descendants[i], people) 
+  if(descendants[i] === person.parents[0] || person.parents[1])
+  listDecendants(descendants[i], people)
+ 
+}
+return descendants 
+  }
